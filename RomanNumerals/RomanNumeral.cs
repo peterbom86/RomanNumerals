@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RomanNumerals
 {
@@ -11,15 +8,18 @@ namespace RomanNumerals
         public char Symbol { get; private set; }
         public int NumericValue { get; private set; }
 
+        public static RomanNumeral NullNumeral = new RomanNumeral('-', 0);
+
         public List<RomanNumeral> PrefixList { get; private set; }
-        public List<RomanNumeral> PostFixList { get; private set; }
 
         public RomanNumeral(char symbol, int numericValue)
         {
             this.Symbol = symbol;
             this.NumericValue = numericValue;
             this.PrefixList = new List<RomanNumeral>();
-            this.PostFixList = new List<RomanNumeral>();
+
+            // Adding a null object to avoid null checks in code
+            PrefixList.Add(NullNumeral);
         }
 
         public void CanBePrefixedWith(RomanNumeral numeral)
@@ -27,9 +27,9 @@ namespace RomanNumerals
             PrefixList.Add(numeral);
         }
 
-        public void CanPostfix(RomanNumeral numeral)
+        public RomanNumeral GreatestPrefix()
         {
-            PostFixList.Add(numeral);
+            return PrefixList.OrderByDescending(x => x.NumericValue).First();
         }
     }
 }

@@ -5,7 +5,7 @@ using RomanNumerals;
 namespace RomanNumeralsTest
 {
     [TestClass]
-    public class UnitTest1
+    public class RomanNumeralsCalculatorTest
     {
         [TestMethod]
         public void Calculate1999()
@@ -47,6 +47,9 @@ namespace RomanNumeralsTest
             Assert.AreEqual(expectedResult, result);
         }
 
+        /// <summary>
+        /// Testing to make sure that 50 is not found as the first numeral and then adding multiple prefixes
+        /// </summary>
         [TestMethod]
         public void Calculate19()
         {
@@ -67,6 +70,9 @@ namespace RomanNumeralsTest
             Assert.AreEqual(expectedResult, result);
         }
 
+        /// <summary>
+        /// A single numeral
+        /// </summary>
         [TestMethod]
         public void Calculate50()
         {
@@ -77,6 +83,22 @@ namespace RomanNumeralsTest
             Assert.AreEqual(expectedResult, result);
         }
 
+        /// <summary>
+        /// Combination of 2 numerals
+        /// </summary>
+        [TestMethod]
+        public void Calculate150()
+        {
+            var calculator = new RomanNumeralsCalculator();
+            var expectedResult = "CL";
+            var result = calculator.Calculate(150);
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        /// <summary>
+        /// Testing to see if the correct numerals can be prefixed - ie. that it does not return "IM" (1000 - 1)
+        /// </summary>
         [TestMethod]
         public void Calculate999()
         {

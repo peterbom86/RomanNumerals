@@ -1,123 +1,88 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RomanNumerals
+﻿namespace RomanNumerals
 {
     public class RomanNumeralsCalculator
     {
-        public ICollection<RomanNumeral> Numerals { get; set; } = new List<RomanNumeral>();
+        private OrderedNumeralCollection NumeralsCollection;
 
         public RomanNumeralsCalculator()
         {
-            // Creation
-            var i = new RomanNumeral('I', 1);
-            var v = new RomanNumeral('V', 5);
-            var x = new RomanNumeral('X', 10);
-            var l = new RomanNumeral('L', 50);
-            var c = new RomanNumeral('C', 100);
-            var d = new RomanNumeral('D', 500);
-            var m = new RomanNumeral('M', 1000);
-
-            // Setup of rules
-            i.CanPostfix(i);
-            i.CanPostfix(v);
-            i.CanPostfix(x);            
-
-            v.CanPostfix(x);
-            v.CanPostfix(l);
-            v.CanPostfix(c);
-            v.CanPostfix(d);
-            v.CanPostfix(m);
-            v.CanBePrefixedWith(i);
-
-            x.CanPostfix(x);
-            x.CanPostfix(l);
-            x.CanPostfix(c);            
-            x.CanBePrefixedWith(i);
-
-            l.CanPostfix(c);
-            l.CanPostfix(d);
-            l.CanPostfix(m);
-            l.CanBePrefixedWith(x);
-
-            c.CanPostfix(c);
-            c.CanPostfix(d);
-            c.CanPostfix(m);
-            c.CanBePrefixedWith(x);            
-
-            d.CanPostfix(m);
-            d.CanBePrefixedWith(c);
-            
-            m.CanBePrefixedWith(c);
-
-            Numerals.Add(i);
-            Numerals.Add(v);
-            Numerals.Add(x);
-            Numerals.Add(l);
-            Numerals.Add(c);
-            Numerals.Add(d);
-            Numerals.Add(m);
-
-            Numerals = Numerals.OrderBy(n => n.NumericValue).ToList();
-
-            var test = new NumeralCollection(null);
+            NumeralsCollection = new OrderedNumeralCollection();
         }
 
-        public string Calculate(int v, string result = "")
+        public string Calculate(int value)
         {
-            if (Numerals.Any(n => n.NumericValue == v))
+            var request = new NumeralRequest(value);
+            return Calculate(request).TempResult;
+        }
+
+        private NumeralRequest Calculate(NumeralRequest request)
+        {
+            if (NumeralsCollection.ValueMatchesANumeral(request.RemainingValue))
             {
-                result = Numerals.Single(n => n.NumericValue == v).Symbol.ToString();
-                return result;
+                request.AddNumeral(NumeralsCollection.GetNumeralMatching(request.RemainingValue));
+
+                return request;
             }
 
-            // Take the first numeral higher than the target number, then check if we get the target number by applying one of the prefix numerals
-            // If target number is higher than number, take the highest numeral
-            var firstLarger = Numerals.FirstOrDefault(x => x.NumericValue >= v);
+            // If target number is higher than the highest numeral, take the highest numeral
+            // else
+            //  Take the first numeral higher than the target number, then check if we get the target number by applying one of the prefix numerals
 
-            if (firstLarger == null)
+            if (NumeralsCollection.ValueIsGreaterThanOrEqualToLargestNumeral(request.RemainingValue))
             {
-                firstLarger = Numerals.First();
-            }
-            
-            var largest = firstLarger.PrefixList.OrderByDescending(x => x.NumericValue).FirstOrDefault();
+                request = request.AddNumeral(NumeralsCollection.GetGreatest());
 
-            if (largest != null && (firstLarger.NumericValue - largest.NumericValue) <= v)
-            {
-                result += largest.Symbol.ToString() + firstLarger.Symbol.ToString();
-                v -= (firstLarger.NumericValue - largest.NumericValue);
-
-                if (v == 0)
+                if (request.RemainingValue == 0)
                 {
-                    return result;
+                    return request;
                 }
                 else
                 {
-                    result = Calculate(v, result);
+                    request = Calculate(request);
                 }
             }
             else
             {
-                var firstLower = Numerals.OrderByDescending(n => n.NumericValue).FirstOrDefault(x => x.NumericValue <= v);
-                result += firstLower.Symbol.ToString();
+                // Find the first numeral which is larger then the target number
+                var lowestGreaterThanValue = NumeralsCollection.FindLowestGreaterThanOrEqualTo(request.RemainingValue);
 
-                v -= firstLower.NumericValue;
-                if (v == 0)
+                var greatestPrefix = lowestGreaterThanValue.GreatestPrefix();
+
+                if (NumeralAndPrefixAreLessThanOrEqualToValue(lowestGreaterThanValue, request.RemainingValue))
                 {
-                    return result;
+                    request = request.AddNumeralWithPrefix(lowestGreaterThanValue);
+
+                    request = request.CheckForResultFound(request, r => Calculate(r));
                 }
-                                
-                result = Calculate(v, result);
-            }            
+                else // Numeral with the greatest prefix is still greater than the target value, we need to find a numeral lower than the one just above the target number
+                {
+                    var firstLower = NumeralsCollection.GetGreatestLowerThanOrEqualTo(request.RemainingValue);
 
-            // if not, take the first numeral lower than the target number, substract the value taken from the target number
+                    request = request.AddNumeral(firstLower);
 
-            // now, we need to find a new number, recurse and find the target number above + one prefix or the first below the target number
+                    request = request.CheckForResultFound(request, r => Calculate(r));
+                }
+            }
 
-            return result;
+            return request;
+        }        
+
+        //private NumeralRequest CheckForResultFound(NumeralRequest request)
+        //{
+        //    if (request.ResultFound())
+        //    {
+        //        return request;
+        //    }
+        //    else
+        //    {
+        //        request = Calculate(request);
+        //        return request;
+        //    }
+        //}
+
+        private bool NumeralAndPrefixAreLessThanOrEqualToValue(RomanNumeral numeral, int remainingValue)
+        {
+            return numeral.NumericValue - numeral.GreatestPrefix().NumericValue <= remainingValue;
         }
     }
 }
