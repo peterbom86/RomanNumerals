@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace RomanNumerals
 {
-    public class OrderedNumeralCollection
+    public class OrderedRomanNumeralCollection
     {
         private IOrderedEnumerable<RomanNumeral> _numerals;
 
@@ -20,7 +20,7 @@ namespace RomanNumerals
             }
         }
 
-        public OrderedNumeralCollection()
+        public OrderedRomanNumeralCollection()
         {
             _numerals = CreateNumerals()
                 .OrderBy(n => n.NumericValue);

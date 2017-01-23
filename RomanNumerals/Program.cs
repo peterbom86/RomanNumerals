@@ -10,6 +10,9 @@ namespace RomanNumerals
     {
         static void Main(string[] args)
         {
+            var calculator = new RomanNumeralsCalculator();
+            var result = calculator.Calculate(555);
+            Console.WriteLine(result);
         }
     }
 }
