@@ -12,8 +12,7 @@
         public string Calculate(int value)
         {
             var request = new RomanNumeralRequest(value, NumeralsCollection);
-
-            request = request.Calculate(request);
+            request = request.Calculate();
             return request.FinalResult.NumeralSymbols;            
         }
     }

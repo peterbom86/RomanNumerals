@@ -8,9 +8,9 @@ namespace RomanNumerals
         public char Symbol { get; private set; }
         public int NumericValue { get; private set; }
 
-        public static RomanNumeral NullNumeral = new RomanNumeral('-', 0);
+        private static RomanNumeral NullNumeral = new RomanNumeral('-', 0);
 
-        public List<RomanNumeral> PrefixList { get; private set; }
+        public ICollection<RomanNumeral> PrefixList { get; private set; }
 
         public RomanNumeral(char symbol, int numericValue)
         {

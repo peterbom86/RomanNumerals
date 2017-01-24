@@ -33,10 +33,15 @@ namespace RomanNumerals
 
         public RomanNumeral GetNumeralMatching(int remainingValue)
         {
+            if (remainingValue < 1)
+            {
+                throw new ArgumentOutOfRangeException("Remaining value must be 1 or greater");
+            }
+
             return _numerals.Single(n => n.NumericValue == remainingValue);
         }
 
-        public bool ValueIsGreaterThanOrEqualToLargestNumeral(int value)
+        public bool LargestNumeralIsLessThanOrEqualTo(int value)
         {
             return value >= _numerals.Last().NumericValue;
         }
@@ -49,6 +54,26 @@ namespace RomanNumerals
         public RomanNumeral GetGreatest()
         {
             return _numerals.Last();
+        }
+
+        public RomanNumeral FindLowestGreaterThanOrEqualTo(int remainingValue)
+        {
+            if (remainingValue < 1)
+            {
+                throw new ArgumentOutOfRangeException("Remaining value must be 1 or greater");
+            }
+
+            return _numerals.First(x => x.NumericValue >= remainingValue);
+        }
+
+        public RomanNumeral GetGreatestLowerThanOrEqualTo(int remainingValue)
+        {
+            if (remainingValue < 1)
+            {
+                throw new ArgumentOutOfRangeException("Remaining value must be 1 or greater");
+            }
+
+            return _numerals.OrderByDescending(n => n.NumericValue).First(x => x.NumericValue <= remainingValue);
         }
 
         private ICollection<RomanNumeral> CreateNumerals()
@@ -82,26 +107,6 @@ namespace RomanNumerals
             numeralList.Add(m);
 
             return numeralList;
-        }
-
-        public RomanNumeral FindLowestGreaterThanOrEqualTo(int remainingValue)
-        {
-            if (remainingValue < 1)
-            {
-                throw new ArgumentOutOfRangeException("Remaining value must be 1 or greater");
-            }
-
-            return _numerals.First(x => x.NumericValue >= remainingValue);
-        }
-
-        public RomanNumeral GetGreatestLowerThanOrEqualTo(int remainingValue)
-        {
-            if (remainingValue < 1)
-            {
-                throw new ArgumentOutOfRangeException("Remaining value must be 1 or greater");
-            }
-
-            return _numerals.OrderByDescending(n => n.NumericValue).First(x => x.NumericValue <= remainingValue);
-        }
+        }        
     }
 }
