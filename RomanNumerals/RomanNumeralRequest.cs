@@ -6,9 +6,9 @@ namespace RomanNumerals
     {
         public int RemainingValue { get; set; }
         public Result FinalResult { get; private set; }
-        private OrderedRomanNumeralCollection NumeralsCollection;
+        private IOrderedRomanNumeralsCollection NumeralsCollection;
 
-        public RomanNumeralRequest(int value, OrderedRomanNumeralCollection numeralsCollection)
+        public RomanNumeralRequest(int value, IOrderedRomanNumeralsCollection numeralsCollection)
         {
             RemainingValue = value;
             FinalResult = new Result();
@@ -71,7 +71,7 @@ namespace RomanNumerals
         /// <summary>
         /// Checks if the values matches a numeral in the provided list of numerals.
         /// </summary>        
-        private bool ValueMatchesANumeralIn(OrderedRomanNumeralCollection numeralsCollection)
+        private bool ValueMatchesANumeralIn(IOrderedRomanNumeralsCollection numeralsCollection)
         {
             return numeralsCollection.ValueMatchesANumeral(RemainingValue);
         }

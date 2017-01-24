@@ -2,11 +2,12 @@
 {
     public class RomanNumeralsCalculator
     {
-        private OrderedRomanNumeralCollection NumeralsCollection;
+        private IOrderedRomanNumeralsCollection NumeralsCollection;
 
         public RomanNumeralsCalculator()
         {
-            NumeralsCollection = new OrderedRomanNumeralCollection();
+            // Todo: inject this so that we can (possibly) change it for another implementation.
+            NumeralsCollection = new OrderedRomanNumeralsCollection();
         }
 
         public string Calculate(int value)

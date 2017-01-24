@@ -5,22 +5,11 @@ using System.Linq;
 
 namespace RomanNumerals
 {
-    public class OrderedRomanNumeralCollection
+    public class OrderedRomanNumeralsCollection : IOrderedRomanNumeralsCollection
     {
         private IOrderedEnumerable<RomanNumeral> _numerals;
 
-        /// <summary>
-        /// Returns an ascending ordered list of roman numerals
-        /// </summary>
-        public IEnumerable<RomanNumeral> Items
-        {
-            get
-            {
-                return _numerals.AsEnumerable();
-            }
-        }
-
-        public OrderedRomanNumeralCollection()
+        public OrderedRomanNumeralsCollection()
         {
             _numerals = CreateNumerals()
                 .OrderBy(n => n.NumericValue);
@@ -28,7 +17,7 @@ namespace RomanNumerals
 
         public RomanNumeral GetLowest()
         {
-            return Items.First();
+            return _numerals.First();
         }
 
         public RomanNumeral GetNumeralMatching(int remainingValue)
@@ -48,7 +37,7 @@ namespace RomanNumerals
 
         public bool ValueMatchesANumeral(int value)
         {
-            return _numerals.Any(n => n.NumericValue == value);            
+            return _numerals.Any(n => n.NumericValue == value);
         }
 
         public RomanNumeral GetGreatest()
@@ -107,6 +96,6 @@ namespace RomanNumerals
             numeralList.Add(m);
 
             return numeralList;
-        }        
+        }
     }
 }

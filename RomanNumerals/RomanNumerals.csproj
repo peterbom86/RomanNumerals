@@ -103,7 +103,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RomanNumeralCollection.cs" />
+    <Compile Include="IOrderedRomanNumeralsCollection.cs" />
+    <Compile Include="OrderedRomanNumeralCollection.cs" />
     <Compile Include="RomanNumeralRequest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
